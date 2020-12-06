@@ -3,12 +3,12 @@ import numpy as np
 from skimage.filters import sobel
 from cv2 import VideoWriter, VideoWriter_fourcc
 
-title = 'pictures/pipe.jpg'
+title = 'pictures/home.jpg'
 image = np.asarray(Image.open(title)).copy()
 width = image.shape[1]
 gray = np.asarray(Image.open(title).convert('L'))
 
-out = VideoWriter('video.mp4', VideoWriter_fourcc(*'mp4v'), 10, (image.shape[1], image.shape[0]))
+out = VideoWriter('home.mp4', VideoWriter_fourcc(*'mp4v'), 10, (image.shape[1], image.shape[0]))
 
 for _ in range(width):
     cost = sobel(gray)
