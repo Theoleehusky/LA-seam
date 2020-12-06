@@ -1,14 +1,17 @@
 from PIL import Image
 import numpy as np
-from skimage import filters
+from skimage.filters import sobel
+from cv2 import VideoWriter, VideoWriter_fourcc
 
-title = 'pictures/interim.jpg'
+title = 'pictures/pipe.jpg'
 image = np.asarray(Image.open(title)).copy()
 width = image.shape[1]
-gray = np.dot(image, [0.299, 0.587, 0.114]).astype(np.uint8)
+gray = np.asarray(Image.open(title).convert('L'))
 
-for _ in range(width-1):
-    cost = filters.sobel(gray)
+out = VideoWriter('video.mp4', VideoWriter_fourcc(*'mp4v'), 10, (image.shape[1], image.shape[0]))
+
+for _ in range(width):
+    cost = sobel(gray)
     rows, columns = cost.shape
     
     for r in range(rows-2, -1, -1):
@@ -24,11 +27,10 @@ for _ in range(width-1):
         image[r][c] = [0,0,255]
         path.append(c)
     
-    Image.fromarray(image).save('pictures/interim/' + str(_) + '.png')
+    out.write(np.pad(image, ((0,0),(0,_),(0,0))))
     
-    columns = image.shape[1]-1
-    newI = np.empty((rows, columns, 3), dtype=np.uint8)
-    newG = np.empty((rows, columns), dtype=np.uint8)
+    newI = np.empty((rows, columns-1, 3), dtype=np.uint8)
+    newG = np.empty((rows, columns-1), dtype=np.uint8)
     for i,j in enumerate(path):
         newI[i][:j] = image[i][:j]
         newI[i][j:] = image[i][j+1:]
@@ -37,4 +39,6 @@ for _ in range(width-1):
     image = newI
     gray = newG
     
-    print(width-_-1, end=' ')
+    print(width-_, end=' ')
+
+out.release()
