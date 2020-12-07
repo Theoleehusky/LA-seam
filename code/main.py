@@ -1,14 +1,11 @@
 from PIL import Image
 import numpy as np
 from skimage.filters import sobel
-from cv2 import VideoWriter, VideoWriter_fourcc
 
-title = 'pictures/interim.jpg'
+title = 'pictures/thing.jpg'
 image = np.asarray(Image.open(title)).copy()
 width = image.shape[1]
 gray = np.asarray(Image.open(title).convert('L'))
-
-# out = VideoWriter('home.mp4', VideoWriter_fourcc(*'mp4v'), 10, (image.shape[1], image.shape[0]))
 
 for _ in range(width):
     cost = sobel(gray)
@@ -27,9 +24,7 @@ for _ in range(width):
         image[r][c] = [0,0,255]
         path.append(c)
     
-    # out.write(np.pad(image, ((0,0),(0,_),(0,0))))
-    Image.fromarray(image).save('pictures/interim/' + str(_) + '.png')
-
+    Image.fromarray(image).save('pictures/thing/' + str(_) + '.png')
 
     newI = np.empty((rows, columns-1, 3), dtype=np.uint8)
     newG = np.empty((rows, columns-1), dtype=np.uint8)
@@ -42,5 +37,3 @@ for _ in range(width):
     gray = newG
     
     print(width-_, end=' ')
-
-# out.release()
