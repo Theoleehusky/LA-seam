@@ -1,1 +1,1 @@
-# Seam Carving Algorithm
+# Seam Carving
